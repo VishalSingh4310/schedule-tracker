@@ -1,13 +1,34 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { ReducerState } from "../../App";
+import { getSchedule } from "../../store/actions/schedule";
 import Card from "./helper/card";
+
+export interface Schedule {
+  id: number;
+  time_slot_from: number;
+  time_slot_to: number;
+  schedule: [
+    {
+      first_name: string;
+      last_name: string;
+      phone: string;
+    }
+  ];
+}
+
 const Home = () => {
-  let dt1 = new Date("November 29, 2021 09:00:00");
-  let dt2 = new Date("November 29, 2021 17:00:00");
-  var diff = (dt2.getTime() - dt1.getTime()) / 1000;
-  diff /= 60 * 60;
-  let total = Math.abs(Math.round(diff));
-  console.log(total);
+  const dispatch = useDispatch();
+
+  const scheduleData = useSelector(
+    (state: ReducerState) => state.schedule.schedules
+  );
+  useEffect(() => {
+    dispatch(getSchedule());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <div className="bg-main">
       <div className="container mx-auto h-screen">
@@ -15,12 +36,18 @@ const Home = () => {
           <h1 className="text-white text-2xl">Schedule Time</h1>
         </div>
         <div className="grid grid-cols-3 gap-4 p-4">
-          {Array.from(Array(total).keys()).map((item) => {
-            let from = dt1.getHours() + item;
-            let to = dt1.getHours() + item + 1;
+          {scheduleData.map((item: Schedule) => {
+            let bg = `#2A2A2A`;
+            if (item.schedule.length > 0) {
+              bg = `#b93535`;
+            }
             return (
-              <Link to={`/${item}`}>
-                <Card from={from} to={to} />
+              <Link to={`/${item.id}`} key={item.id}>
+                <Card
+                  cardbg={bg}
+                  from={item.time_slot_from}
+                  to={item.time_slot_to}
+                />
               </Link>
             );
           })}

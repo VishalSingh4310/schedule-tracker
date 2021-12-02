@@ -5,11 +5,12 @@ import Cardlayout from "./cardlayout";
 interface Props {
   from: number;
   to: number;
+  cardbg: string;
 }
 
-export default function Card({ from, to }: Props) {
+export default function Card({ from, to, cardbg }: Props) {
   return (
-    <Cardlayout color={`#2A2A2A`}>
+    <Cardlayout color={cardbg} classStyle="h-36">
       <>
         <div className="flex justify-center items-center ">
           <p className="text-gray-100">
